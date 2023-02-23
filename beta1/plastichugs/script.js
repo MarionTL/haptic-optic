@@ -101,7 +101,7 @@ function getDevice () {
     title3 = 6
     credit1 = 32
     d1 = 900
-    d2 = 700
+    d2 = 200
     zSpeed = 0.1
     pSpeed = 0.1
     initialWidth = 8
@@ -114,7 +114,7 @@ function getDevice () {
     title3 = 12
     credit1 = 32
     d1 = 1000
-    d2 = 500
+    d2 = 200
     zSpeed = 0.2
     pSpeed = 1
     initialWidth = 4
