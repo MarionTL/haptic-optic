@@ -74,6 +74,10 @@ const mouse = new THREE.Vector2(),
 
 const camRay = new THREE.Raycaster()
 const ray = new THREE.Vector3()
+ray.x = 0
+ray.y = 0
+ray.z = 1
+
 getDevice()
 getData()
 
@@ -131,9 +135,6 @@ async function init () {
   scene = new THREE.Scene()
   scene.add(camera)
 
-  ray.x = 0
-  ray.y = 0
-  ray.z = 0
 
   // stats
   stats = new Stats()
@@ -181,11 +182,6 @@ async function init () {
   document.addEventListener('click', onClick)
   window.addEventListener('keydown', onKeyDown)
   window.addEventListener('keyup', onKeyUp)
-
-  // drag controls
-  dragControls = new DragControls([...items], camera, renderer.domElement)
-  dragControls.addEventListener('drag', render)
-  createControls(camera)
 
   const message1 = [
     [')) HAPTIC )( OPTIC ((', title1],
@@ -408,10 +404,16 @@ function addInstancedMesh (scene, dataArr) {
         objects.push([mesh, bgMesh])
         items.push(mesh)
         //items.push(bgMesh)
-        items.push(fontMesh)
+        // items.push(fontMesh)
       })
     })
   }
+
+  // drag controls
+
+  dragControls = new DragControls(items, camera, renderer.domElement)
+  dragControls.addEventListener('drag', render)
+  createControls(camera)
 
   animate()
 }
@@ -426,60 +428,45 @@ function onKeyUp () {
 
 function onClick (event) {
   event.preventDefault()
-  if (title === false) {
-    if (enableSelection === true) {
-      const draggableObjects = dragControls.getObjects()
-      draggableObjects.length = 0
+
+  // if (title === false) {
+    // if (enableSelection === true) {
+      // const draggableObjects = dragControls.getObjects()
+      // draggableObjects.length = 0
 
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
-      raycaster.layers.set(1)
+            
 
       const intersections = raycaster.intersectObjects(items, true)
       const intersectionsCredits = raycaster.intersectObjects(textCredit, true)
-      camRay.setFromCamera(ray, camera)
-      camRay.layers.set(1)
 
-      // calculate objects intersecting the picking ray
-      const intersects = camRay.intersectObjects(items, true)
 
       if (intersections.length > 0) {
+        console.log("click")
         const object = intersections[0].object
+
+        if (object.children[0].children[0] !== undefined) {
+          object.children[0].isMesh = !object.children[0].isMesh
+          object.children[0].children[0].isMesh =!object.children[0].children[0].isMesh
+        } else {
+          object.isMesh = !object.isMesh
+          object.children[0].isMesh = !object.children[0].isMesh
+        }
         object.parent.attach(object)
 
-        dragControls.transformGroup = true
-        draggableObjects.push(group)
-
-        if (intersects.length > 0 && intersects[0].distance < 3000) {
-          if (object.children[0].children[0] !== undefined) {
-            object.children[0].isMesh = !object.children[0].isMesh
-            object.children[0].children[0].isMesh =!object.children[0].children[0].isMesh
-          } else {
-            object.isMesh = !object.isMesh
-            object.children[0].isMesh = !object.children[0].isMesh
-          }
-        } 
-        // console.log(count)
+        //dragControls.transformGroup = true
+        //draggableObjects.push(groupCredit)
       }
 
-      if (intersectionsCredits.length > 0) {
-        const object = intersectionsCredits[0].object
-        // object.children[0].isMesh = !object.children[0].isMesh
-        // object.children[0].children[0].isMesh = !object.children[0].children[0].isMesh
-        object.parent.attach(object)
-
-        dragControls.transformGroup = true
-        draggableObjects.push(groupCredit)
-      }
-
-      if (group.children.length === 0) {
-        dragControls.transformGroup = false
-        draggableObjects.push(...items)
-      }
-    }
-  }
+      // if (group.children.length === 0) {
+      //   dragControls.transformGroup = false
+      //   draggableObjects.push(...items)
+      // }
+    // }
+  // }
 }
 
 function createControls (camera) {
@@ -537,36 +524,6 @@ function checkCameraPos () {
   if (Math.abs(deltaZ) > 5000) {
     addObjects()
     deltaZ = 0
-  }
-}
-
-function test () {
-  camRay.setFromCamera(ray, camera)
-  camRay.layers.set(1)
-  // calculate objects intersecting the picking ray
-  const intersects = camRay.intersectObjects(items, true)
-
-  if (
-    intersects.length > 0 &&
-    d2 < intersects[0].distance &&
-    intersects[0].distance < d1
-  ) {
-    const object = intersects[0].object
-    for (let i = 0; i < textCredit.length; i++) {
-      if (object.name != textCredit[i].name) {
-        textCredit[i].isMesh = false
-        textCredit[i].children[0].isMesh = false
-      } else {
-        // credit = textCredit[i].name
-        textCredit[i].isMesh = true
-        textCredit[i].children[0].isMesh = true
-      }
-    }
-  } else {
-    for (let i = 0; i < textCredit.length; i++) {
-      textCredit[i].isMesh = false
-      textCredit[i].children[0].isMesh = false
-    }
   }
 }
 
