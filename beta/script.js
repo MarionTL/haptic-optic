@@ -379,6 +379,7 @@ function addInstancedMesh (scene, dataArr) {
           50
         )
 
+
         fontMesh.geometry.translate(xMid + 40, yMid - 60, 1)
 
         fontMesh.isMesh = false
@@ -386,19 +387,8 @@ function addInstancedMesh (scene, dataArr) {
         bgMesh.add(fontMesh)
         mesh.name = bgMesh.name = 'data[' + i + ']'
 
-        fontMesh.layers.enable()
-        bgMesh.layers.enable(1)
-        mesh.layers.enable(1)
-        // addCredits.push(fontMesh)
         textCredit.push(bgMesh)
-        //textCredit.push(fontMesh)
-
-        // const xMid =
-        //   -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x)
-        // geometry.translate(xMid, 0, -500)
-
-        // fontMesh.material.depthTest = false
-        // fontMesh.material.depthWrite = false
+    
 
         mesh.add(bgMesh)
         objects.push([mesh, bgMesh])
@@ -441,10 +431,9 @@ function onClick (event) {
             
 
       const intersections = raycaster.intersectObjects(items, true)
-      const intersectionsCredits = raycaster.intersectObjects(textCredit, true)
 
 
-      if (intersections.length > 0) {
+      if (intersections.length > 0 && intersections[0].distance <= 3000) {
         console.log("click")
         const object = intersections[0].object
 
@@ -457,16 +446,9 @@ function onClick (event) {
         }
         object.parent.attach(object)
 
-        //dragControls.transformGroup = true
-        //draggableObjects.push(groupCredit)
       }
 
-      // if (group.children.length === 0) {
-      //   dragControls.transformGroup = false
-      //   draggableObjects.push(...items)
-      // }
-    // }
-  // }
+  
 }
 
 function createControls (camera) {
