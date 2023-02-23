@@ -81,7 +81,9 @@ async function getData () {
   dataArr = await GetData()
   //console.log(dataArr)
   setTimeout(() => {
-    init()
+    if(dataArr.length > 0){
+      init()
+    }
   }, 500)
 }
 

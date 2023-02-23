@@ -81,8 +81,10 @@ async function getData () {
   dataArr = await GetData()
   //console.log(dataArr)
   setTimeout(() => {
-    init()
-  }, 500)
+    if(dataArr.length > 0){
+      init()
+    }
+  }, 1000)
 }
 
 function getDevice () {
