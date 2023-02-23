@@ -446,7 +446,7 @@ function onClick (event) {
         draggableObjects.push(group)
 
         
-          if (intersects.length > 0 && intersects[0].distance < 1500) {
+          if (intersects.length > 0 && intersects[0].distance < 3000) {
             if(object.children[0].children[0] !== undefined) {
             object.children[0].isMesh = !object.children[0].isMesh
             object.children[0].children[0].isMesh = !object.children[0].children[0].isMesh
