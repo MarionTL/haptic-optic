@@ -21,8 +21,7 @@ let camera, scene
 
 let renderer, composer, bloomPass
 let controls, dragControls
-let group, groupCredit
-let enableSelection = true
+let group
 
 let prevCameraX = 0
 let prevCameraY = 0
@@ -30,7 +29,6 @@ let prevCameraZ = 0
 let deltaX = 0
 let deltaY = 0
 let deltaZ = 0
-let count = 0
 let clock = new THREE.Clock()
 
 let afterimagePass
@@ -42,27 +40,20 @@ const params = {
   bloomThreshold: 0.65,
   bloomRadius: 0
 }
-const fogParams = {
-  fogNearColor: 0xffffff,
-  fogHorizonColor: 0xffffff,
-  fogDensity: 0.00005,
-  fogNoiseSpeed: 50,
-  fogNoiseFreq: 0.0012,
-  fogNoiseImpact: 0.3
-}
+
 let dataArr
 let objects = []
 let items = []
 let textCredit = []
-let title = false
+// let title = false
 
 // variables
 let title1,
   title2,
   title3,
   credit1,
-  d1,
-  d2,
+  // d1,
+  // d2,
   zSpeed,
   pSpeed,
   initialWidth,
@@ -72,11 +63,6 @@ let title1,
 const mouse = new THREE.Vector2(),
   raycaster = new THREE.Raycaster()
 
-const camRay = new THREE.Raycaster()
-const ray = new THREE.Vector3()
-ray.x = 0
-ray.y = 0
-ray.z = 1
 
 getDevice()
 getData()
@@ -104,8 +90,8 @@ function getDevice () {
     title2 = 7
     title3 = 6
     credit1 = 32
-    d1 = 900
-    d2 = 200
+    // d1 = 900
+    // d2 = 200
     zSpeed = 0.1
     pSpeed = 0.1
     initialWidth = 8
@@ -117,8 +103,8 @@ function getDevice () {
     title2 = 14
     title3 = 12
     credit1 = 32
-    d1 = 1000
-    d2 = 200
+    // d1 = 1000
+    // d2 = 200
     zSpeed = 0.2
     pSpeed = 1
     initialWidth = 4
@@ -180,8 +166,7 @@ async function init () {
     onWindowResize(camera, renderer, composer)
   })
   document.addEventListener('click', onClick)
-  window.addEventListener('keydown', onKeyDown)
-  window.addEventListener('keyup', onKeyUp)
+
 
   const message1 = [
     [')) HAPTIC )( OPTIC ((', title1],
@@ -237,7 +222,7 @@ function loadTitle (camera, message) {
       text.isMesh = true
       setTimeout(() => {
         text.isMesh = false
-        title = false
+        // title = false
       }, 7000)
     }
   }) //end load function
@@ -408,21 +393,12 @@ function addInstancedMesh (scene, dataArr) {
   animate()
 }
 
-function onKeyDown (event) {
-  enableSelection = event.keyCode === 16 ? true : false
-}
 
-function onKeyUp () {
-  enableSelection = false
-}
 
 function onClick (event) {
   event.preventDefault()
 
   // if (title === false) {
-    // if (enableSelection === true) {
-      // const draggableObjects = dragControls.getObjects()
-      // draggableObjects.length = 0
 
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -436,8 +412,8 @@ function onClick (event) {
       if (intersections.length > 0 && intersections[0].distance <= 3000) {
         console.log("click")
         const object = intersections[0].object
-
-        if (object.children[0].children[0] !== undefined) {
+        
+        if (object.children[0] !== undefined && object.children[0].children[0] !== undefined) {
           object.children[0].isMesh = !object.children[0].isMesh
           object.children[0].children[0].isMesh =!object.children[0].children[0].isMesh
         } else {
