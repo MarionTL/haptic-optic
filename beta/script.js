@@ -132,7 +132,7 @@ async function init () {
   scene.add(group)
 
   // renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance'})
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
   document.querySelector('#webgl').appendChild(renderer.domElement)
