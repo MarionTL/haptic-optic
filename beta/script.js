@@ -63,6 +63,7 @@ let title1,
 const mouse = new THREE.Vector2(),
   raycaster = new THREE.Raycaster()
 
+let hasDragged = false
 
 getDevice()
 getData()
@@ -165,6 +166,7 @@ async function init () {
   portrait.addEventListener('change', function (e) {
     onWindowResize(camera, renderer, composer)
   })
+  
   document.addEventListener('click', onClick)
 
 
@@ -388,6 +390,12 @@ function addInstancedMesh (scene, dataArr) {
 
   dragControls = new DragControls(items, camera, renderer.domElement)
   dragControls.addEventListener('drag', render)
+
+  dragControls.addEventListener( 'drag', function ( event ) {
+    hasDragged = true
+  } );
+
+
   createControls(camera)
 
   animate()
@@ -396,10 +404,12 @@ function addInstancedMesh (scene, dataArr) {
 
 
 function onClick (event) {
+  if (hasDragged) {
+    hasDragged = false
+    return
+  } 
   event.preventDefault()
-
-  // if (title === false) {
-
+  
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
@@ -454,6 +464,7 @@ function animate () {
   // if (title === false && onMobile === false) {
   //   test()
   // }
+
 
   controls.update()
   stats.update()
