@@ -146,7 +146,7 @@
   </head>
 
   <body>
-    <header><a href="" onclick="toggleOverlay()"><img src="img/logo.svg" /></a></header>
+    <header><a  onclick="toggleOverlay()"><img src="img/logo.svg" /></a></header>
 
     <div id="overlay" class="overlay hidden">
 		<a href="" onclick="toggleOverlay()"><img src="img/close.svg" style="width: 20px; position: fixed; top: 20px; left: 20px; z-index: 50;"/></a>
@@ -211,10 +211,7 @@
 
     <!-- Import maps polyfill -->
     <!-- Remove this when import maps will be widely supported -->
-    <script
-      async
-      src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"
-    ></script>
+
 
     <script type="vertex" id="vertexShader">
 
@@ -250,6 +247,8 @@
         }
       }
     </script>
+
+    <script src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
     <script type="module" src="utils.js"></script>
     <script type="module" src="script.js"></script>
   </body>
