@@ -1,11 +1,11 @@
 import * as THREE from 'three'
 
-import Stats from 'three/addons/libs/stats.module.js'
+// import Stats from 'three/addons/libs/stats.module.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
+// import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { DragControls } from 'three/addons/controls/DragControls.js'
@@ -33,13 +33,13 @@ let clock = new THREE.Clock()
 
 let afterimagePass
 
-const params = {
-  enable: true,
-  exposure: 0,
-  bloomStrength: 0.15,
-  bloomThreshold: 0.65,
-  bloomRadius: 0
-}
+// const params = {
+//   enable: true,
+//   exposure: 0,
+//   bloomStrength: 0.15,
+//   bloomThreshold: 0.65,
+//   bloomRadius: 0
+// }
 
 let dataArr
 let objects = []
@@ -124,12 +124,12 @@ async function init () {
 
 
   // stats
-  stats = new Stats()
+  // stats = new Stats()
   //document.body.appendChild(stats.dom)
 
   // console.log(dataArr)
-  group = new THREE.Group()
-  scene.add(group)
+  // group = new THREE.Group()
+  // scene.add(group)
 
   // renderer
   renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance'})
@@ -149,16 +149,16 @@ async function init () {
   afterimagePass = new AfterimagePass()
   composer.addPass(afterimagePass)
 
-  bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.5,
-    0.4,
-    0.85
-  )
-  bloomPass.threshold = params.bloomThreshold
-  bloomPass.strength = params.bloomStrength
-  bloomPass.radius = params.bloomRadius
-  composer.addPass(bloomPass)
+  // bloomPass = new UnrealBloomPass(
+  //   new THREE.Vector2(window.innerWidth, window.innerHeight),
+  //   1.5,
+  //   0.4,
+  //   0.85
+  // )
+  // bloomPass.threshold = params.bloomThreshold
+  // bloomPass.strength = params.bloomStrength
+  // bloomPass.radius = params.bloomRadius
+  // composer.addPass(bloomPass)
 
   // event listeners
   window.addEventListener('resize', onWindowResize(camera, renderer, composer))
@@ -345,7 +345,7 @@ function addInstancedMesh (scene, dataArr) {
           30,
           30
         )
-        const bgMaterial = new THREE.MeshBasicMaterial({ color: 0xd6d6d6 })
+        const bgMaterial = new THREE.MeshBasicMaterial({ color: 0xfafafa })
         const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial)
         bgGeometry.computeBoundingBox()
         //bgMaterial.transparent =true
@@ -467,7 +467,7 @@ function animate () {
 
 
   controls.update()
-  stats.update()
+  //stats.update()
 
   render()
   requestAnimationFrame(animate)
@@ -549,9 +549,9 @@ function render () {
 
   controls.update(deltaTime)
 
-  if (params.enable) {
+  // if (params.enable) {
     composer.render()
-  } else {
-    renderer.render(scene)
-  }
+  // } else {
+  //   renderer.render(scene)
+  // }
 }
