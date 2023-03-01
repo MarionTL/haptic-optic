@@ -162,10 +162,10 @@ async function init () {
 
   // event listeners
   window.addEventListener('resize', onWindowResize(camera, renderer, composer))
-  let portrait = window.matchMedia('(orientation: portrait)')
-  portrait.addEventListener('change', function (e) {
-    onWindowResize(camera, renderer, composer)
-  })
+  // let portrait = window.matchMedia('(orientation: portrait)')
+  // portrait.addEventListener('change', function (e) {
+  //   onWindowResize(camera, renderer, composer)
+  // })
   
   document.addEventListener('click', onClick)
 
