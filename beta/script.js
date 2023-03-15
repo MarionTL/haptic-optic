@@ -361,13 +361,16 @@ function addInstancedMesh (scene, dataArr) {
         // geometry.translate(xMid, 0, -500)
 
         bgMesh.position.set(
-          texture.image.width - texture.image.width / 2 - 50,
-          -texture.image.height / 2 - 50,
+          texture.image.width - texture.image.width / 2,
+          -texture.image.height / 2,
           50
         )
+        bgMesh.geometry.translate(0, 0, 20)
 
-
-        fontMesh.geometry.translate(xMid + 40, yMid - 60, 1)
+        fontMesh.position.set(
+          xMid + 40, yMid - 60, 22
+        )
+        //fontMesh.geometry.translate(xMid + 40, yMid - 60, 22)
 
         fontMesh.isMesh = false
         bgMesh.isMesh = false
@@ -376,12 +379,14 @@ function addInstancedMesh (scene, dataArr) {
 
         textCredit.push(bgMesh)
     
-
+        bgMesh.layers.enable(1)
+        mesh.layers.enable(1)
+        //fontMesh.layers.enable(2)
         mesh.add(bgMesh)
         objects.push([mesh, bgMesh])
         items.push(mesh)
         //items.push(bgMesh)
-        // items.push(fontMesh)
+        //items.push(fontMesh)
       })
     })
   }
@@ -414,12 +419,12 @@ function onClick (event) {
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
-            
+      // raycaster.layers.enable(1)     
 
       const intersections = raycaster.intersectObjects(items, true)
 
 
-      if (intersections.length > 0 && intersections[0].distance <= 3000) {
+      if (intersections.length > 0 && intersections[0].distance <= 4000) {
         console.log("click")
         const object = intersections[0].object
         
@@ -458,7 +463,7 @@ function animate () {
     let object = objects[i][0]
     object.position.y += Math.sin((i + time) / 20) * 0.06
     object.position.x += Math.sin((i + time) / 30) * 0.06
-    object.position.z += Math.sin((i + time) / 35) * 0.06
+    // object.position.z += Math.sin((i + time) / 35) * 0.06
   }
   checkCameraPos()
   // if (title === false && onMobile === false) {

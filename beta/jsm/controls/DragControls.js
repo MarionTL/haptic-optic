@@ -151,6 +151,7 @@ class DragControls extends EventDispatcher {
 			_intersections.length = 0;
 
 			_raycaster.setFromCamera( _pointer, _camera );
+			_raycaster.layers.set(1)
 			_raycaster.intersectObjects( _objects, true, _intersections );
 
 			if ( _intersections.length > 0 ) {
