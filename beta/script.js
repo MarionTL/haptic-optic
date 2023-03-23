@@ -11,7 +11,7 @@ import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { DragControls } from 'three/addons/controls/DragControls.js'
 
 import { GetData } from './data/get_data.js'
-import { TextureLoader } from 'three'
+import { Object3D, ShaderMaterial, TextureLoader } from 'three'
 import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 
@@ -164,9 +164,23 @@ function init () {
 
   // event listeners
   window.addEventListener('resize', onWindowResize(camera, renderer, composer))
-  
+  document.addEventListener('mousemove', onDocumentMouseMove, false);
+  // document.addEventListener('mousedown', onDocumentMouseDown, false);
+
   document.addEventListener('click', onClick)
 }
+function onDocumentMouseMove(event) {
+  // Update the mouse position relative to the canvas
+  event.preventDefault();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+// function onDocumentMouseDown(event) {
+//   // Lock the pointer when the user clicks on the canvas
+//   controls.lock();
+// }
+
 
 function onWindowResize(camera, renderer, composer) {
 
@@ -249,6 +263,9 @@ function addInstancedMesh (scene, dataArr) {
         transparent: true,
         opacity: 1
       })
+
+      //material.uniforms.uMouse.value.set(mouse.x, mouse.y);
+
       geometry.computeBoundingBox()
       geometry.needsUpdate = true
       const mesh = new THREE.Mesh(geometry, material)
@@ -367,6 +384,9 @@ function addInstancedMesh (scene, dataArr) {
         mesh.layers.enable(1)
 
         mesh.add(bgMesh)
+
+       
+
         objects.push([mesh, bgMesh])
         items.push(mesh)
 
@@ -437,24 +457,22 @@ function createControls (camera) {
 /////// ANIMATE
 
 function animate () {
+  requestAnimationFrame(animate)
   const time = performance.now() * 0.0005
 
   for (let i = 1, l = objects.length; i < l; i++) {
     let object = objects[i][0]
     object.position.y += Math.sin((i + time) / 20) * 0.06
     object.position.x += Math.sin((i + time) / 30) * 0.06
-    // object.position.z += Math.sin((i + time) / 35) * 0.06
   }
   checkCameraPos()
-  // if (title === false && onMobile === false) {
-  //   test()
-  // }
 
   controls.update()
-  //stats.update()
+
+
 
   render()
-  requestAnimationFrame(animate)
+  
 }
 
 function checkCameraPos () {

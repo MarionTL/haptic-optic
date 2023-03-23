@@ -234,6 +234,7 @@
     <script type="vertex" id="vertexShader">
 
       varying vec2 vUv;
+    
 
       void main() {
       	vUv = uv;
@@ -246,7 +247,12 @@
     <script type="x-shader/x-fragment" id="fragmentShader">
       uniform sampler2D texture1;
       uniform sampler2D bloomTexture;
+      uniform vec2 u_mouse;
+      uniform vec2 u_res;
+
       varying vec2 vUv;
+
+    
 
       void main() {
       	vec4 color1 = texture2D(texture1, vUv);
