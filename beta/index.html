@@ -128,7 +128,7 @@
       }
 
       .hidden {
-        animation: fadeOut 0.3s;
+        display: none;
       }
 
       @keyframes fadeIn {
@@ -218,7 +218,7 @@
 			
 			} else if(overlay.classList.contains('visible')) {
 				overlay.classList.replace('visible', 'hidden');
-				setTimeout(function(){ overlay.style.display = 'none'; }, 300);
+				overlay.style.display = 'none'; 
 				
 	
 			}

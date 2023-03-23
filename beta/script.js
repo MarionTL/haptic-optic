@@ -14,7 +14,7 @@ import { GetData } from './data/get_data.js'
 import { TextureLoader } from 'three'
 import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
-import { onWindowResize } from './utils.js'
+
 
 let stats
 let camera, scene
@@ -72,7 +72,7 @@ async function getData () {
   dataArr = await GetData()
   //console.log(dataArr)
   setTimeout(() => {
-    if(dataArr.length > 0){
+    if (dataArr.length > 0) {
       init()
     }
   }, 1000)
@@ -113,7 +113,7 @@ function getDevice () {
   }
 }
 
-async function init () {
+function init () {
   const aspect = window.innerWidth / window.innerHeight
 
   camera = new THREE.PerspectiveCamera(60, aspect, 1, 4000)
@@ -122,54 +122,31 @@ async function init () {
   scene = new THREE.Scene()
   scene.add(camera)
 
-
   // stats
   // stats = new Stats()
   //document.body.appendChild(stats.dom)
 
-  // console.log(dataArr)
-  // group = new THREE.Group()
-  // scene.add(group)
 
   // renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance'})
+  renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    powerPreference: 'high-performance'
+  })
+
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
   document.querySelector('#webgl').appendChild(renderer.domElement)
 
-  // fog
+  //bg
   scene.background = new THREE.Color(0xffffff)
-  // scene.background = new THREE.Color(fogParams.fogHorizonColor)
-  // scene.fog = new THREE.FogExp2(fogParams.fogHorizonColor, fogParams.fogDensity)
 
   // postprocessing
   composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
-
   afterimagePass = new AfterimagePass()
   composer.addPass(afterimagePass)
 
-  // bloomPass = new UnrealBloomPass(
-  //   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  //   1.5,
-  //   0.4,
-  //   0.85
-  // )
-  // bloomPass.threshold = params.bloomThreshold
-  // bloomPass.strength = params.bloomStrength
-  // bloomPass.radius = params.bloomRadius
-  // composer.addPass(bloomPass)
-
-  // event listeners
-  window.addEventListener('resize', onWindowResize(camera, renderer, composer))
-  // let portrait = window.matchMedia('(orientation: portrait)')
-  // portrait.addEventListener('change', function (e) {
-  //   onWindowResize(camera, renderer, composer)
-  // })
   
-  document.addEventListener('click', onClick)
-
-
   const message1 = [
     [')) HAPTIC )( OPTIC ((', title1],
     ['Touching Collection', title2],
@@ -184,6 +161,23 @@ async function init () {
   // launch functions
 
   addInstancedMesh(scene, dataArr)
+
+  // event listeners
+  window.addEventListener('resize', onWindowResize(camera, renderer, composer))
+  
+  document.addEventListener('click', onClick)
+}
+
+function onWindowResize(camera, renderer, composer) {
+
+  const aspect = window.innerWidth / window.innerHeight;
+
+  camera.aspect = aspect;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  composer.setSize( window.innerWidth, window.innerHeight );
+  // controls.handleResize();
 }
 
 function loadTitle (camera, message) {
@@ -250,6 +244,8 @@ function addInstancedMesh (scene, dataArr) {
         vertexShader: document.getElementById('vertexShader').textContent,
         fragmentShader: document.getElementById('fragmentShader').textContent,
         wireframe: false,
+        depthWrite: true,
+        depthTest: true,
         transparent: true,
         opacity: 1
       })
@@ -264,35 +260,12 @@ function addInstancedMesh (scene, dataArr) {
       mesh.scale.x = mesh.scale.y = 0.5
       // mesh.renderOrder = 1
 
-      scene.add(mesh)
-
       /////// ADD CREDITS
       const font = new FontLoader()
 
       font.load('fonts/Grotesk/Grotesk03_Bold.json', function (font) {
         let credits
-        /* break dataArr[i][3] into a new line every 3 words */
 
-        // dataArr[i][1] = dataArr[i][1].split(' ')
-        // let line = ''
-        // for (let j = 0; j < dataArr[i][1].length; j++) {
-        //   line += dataArr[i][1][j] + ' '
-
-        //   if (j % 7 === 1 && dataArr[i][1].length > 10) {
-        //     line += '\n'
-        //   }
-        // }
-
-        // dataArr[i][4] = dataArr[i][4].split(' ')
-        //   let line2 = ''
-        //   for (let j = 0; j < dataArr[i][4].length; j++) {
-        //     line2 += dataArr[i][4][j] + ' '
-
-        //     if (j % 7 === 1 && dataArr[i][4].length > 10) {
-        //       line2 += '\n'
-        //     }
-        //   }
-        //console.log(dataArr[i][2])
         if (dataArr[i][4] === 'undefined') {
           dataArr[i][4] = ''
         }
@@ -345,7 +318,7 @@ function addInstancedMesh (scene, dataArr) {
           30,
           30
         )
-        const bgMaterial = new THREE.MeshBasicMaterial({ color: 0xfafafa })
+        const bgMaterial = new THREE.MeshBasicMaterial({ color: 0xfafafa, depthWrite: true, depthTest: true })
         const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial)
         bgGeometry.computeBoundingBox()
         //bgMaterial.transparent =true
@@ -360,33 +333,44 @@ function addInstancedMesh (scene, dataArr) {
             bgMesh.geometry.boundingBox.min.y)
         // geometry.translate(xMid, 0, -500)
 
-        bgMesh.position.set(
-          texture.image.width - texture.image.width / 2,
-          -texture.image.height / 2,
-          50
-        )
-        bgMesh.geometry.translate(0, 0, 20)
+        // position bgMesh so it is always centered with the bottom right corner of mesh
 
-        fontMesh.position.set(
-          xMid + 40, yMid - 60, 22
-        )
-        //fontMesh.geometry.translate(xMid + 40, yMid - 60, 22)
+        const meshSize = new THREE.Vector3()
+
+        mesh.geometry.computeBoundingBox()
+        mesh.geometry.boundingBox.getSize(meshSize)
+
+        const meshBottomRight = new THREE.Vector3().copy(mesh.position)
+        meshBottomRight.x = meshSize.x / 2
+        meshBottomRight.y = meshSize.y / 2
+
+        bgMesh.position.copy(meshBottomRight)
+
+        bgMesh.position.x = mesh.geometry.parameters.width / 2
+        bgMesh.position.y = -mesh.geometry.parameters.height / 2 
+        bgMesh.position.z = 60
+
+        fontMesh.position.set(xMid + 40, yMid - 60, 2)
 
         fontMesh.isMesh = false
         bgMesh.isMesh = false
+
         bgMesh.add(fontMesh)
         mesh.name = bgMesh.name = 'data[' + i + ']'
 
         textCredit.push(bgMesh)
-    
+
+
+        mesh.renderOrder = 1
+        bgMesh.renderOrder = 5
         bgMesh.layers.enable(1)
         mesh.layers.enable(1)
-        //fontMesh.layers.enable(2)
+
         mesh.add(bgMesh)
         objects.push([mesh, bgMesh])
         items.push(mesh)
-        //items.push(bgMesh)
-        //items.push(fontMesh)
+
+        scene.add(mesh)
       })
     })
   }
@@ -396,50 +380,46 @@ function addInstancedMesh (scene, dataArr) {
   dragControls = new DragControls(items, camera, renderer.domElement)
   dragControls.addEventListener('drag', render)
 
-  dragControls.addEventListener( 'drag', function ( event ) {
+  dragControls.addEventListener('drag', function (event) {
     hasDragged = true
-  } );
-
+  })
 
   createControls(camera)
 
   animate()
 }
 
-
-
 function onClick (event) {
   if (hasDragged) {
     hasDragged = false
     return
-  } 
+  }
   event.preventDefault()
-  
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
-      raycaster.setFromCamera(mouse, camera)
-      // raycaster.layers.enable(1)     
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
-      const intersections = raycaster.intersectObjects(items, true)
+  raycaster.setFromCamera(mouse, camera)
+  raycaster.layers.set(1)
 
+  const intersections = raycaster.intersectObjects(items, true)
 
-      if (intersections.length > 0 && intersections[0].distance <= 4000) {
-        console.log("click")
-        const object = intersections[0].object
-        
-        if (object.children[0] !== undefined && object.children[0].children[0] !== undefined) {
-          object.children[0].isMesh = !object.children[0].isMesh
-          object.children[0].children[0].isMesh =!object.children[0].children[0].isMesh
-        } else {
-          object.isMesh = !object.isMesh
-          object.children[0].isMesh = !object.children[0].isMesh
-        }
-        object.parent.attach(object)
+  if (intersections.length > 0 && intersections[0].distance <= 4000) {
+    console.log('click')
+    const object = intersections[0].object
 
-      }
-
-  
+    if (
+      object.children[0] !== undefined &&
+      object.children[0].children[0] !== undefined
+    ) {
+      object.children[0].isMesh = !object.children[0].isMesh
+      object.children[0].children[0].isMesh = object.children[0].isMesh
+    } else {
+      object.isMesh = !object.isMesh
+      object.children[0].isMesh = object.isMesh
+    }
+    object.parent.attach(object)
+  }
 }
 
 function createControls (camera) {
@@ -469,7 +449,6 @@ function animate () {
   // if (title === false && onMobile === false) {
   //   test()
   // }
-
 
   controls.update()
   //stats.update()
@@ -555,7 +534,7 @@ function render () {
   controls.update(deltaTime)
 
   // if (params.enable) {
-    composer.render()
+  composer.render()
   // } else {
   //   renderer.render(scene)
   // }
